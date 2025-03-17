@@ -227,5 +227,7 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/windows,intellij+all,kotlin,gradle,git
 
 # 특정 YAML 파일 무시
+# 모든 YAML 환경 설정 파일 무시
+/src/main/resources/application.yml
 /src/main/resources/application-default.yml
 /src/main/resources/application-docker.yml
