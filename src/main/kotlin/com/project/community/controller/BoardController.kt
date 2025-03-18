@@ -36,15 +36,15 @@ class BoardController(
 
     // TODO :: valid도 넣어야징..
     @PostMapping("/community/{memberId}")
-    fun createCommunityPost(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): String{
+    fun createCommunityPost(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): ResponseEntity<String>{
         boardService.createCommunityPost(boardCreateDTO, memberId)
-        return "Success"
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success")
     }
 
     @PostMapping("/notice/{memberId}")
-    fun createNotice(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): String{
+    fun createNotice(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): ResponseEntity<String>{
         boardService.createNotice(boardCreateDTO, memberId)
-        return "Success"
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success")
     }
 
 
