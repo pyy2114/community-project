@@ -1,16 +1,14 @@
 package com.project.community.controller
 
+import com.project.community.dto.BoardCreateDTO
 import com.project.community.dto.BoardDetailsDTO
 import com.project.community.dto.BoardListDTO
+import com.project.community.entity.Member
 import com.project.community.service.BoardService
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/board")
@@ -28,6 +26,31 @@ class BoardController(
     @GetMapping("/{boardId}")
     fun getBoardDetails(@PathVariable boardId: Long): BoardDetailsDTO{
         return boardService.getBoardDetails(boardId)
+    }
+
+    // TODO :: valid도 넣어야징..
+    @PostMapping("/community")
+    fun createCommunityPost(@RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.createCommunityPost(boardCreateDTO)
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success")
+    }
+
+    @PostMapping("/notice")
+    fun createNotice(@RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.createNotice(boardCreateDTO)
+        return ResponseEntity.status(HttpStatus.CREATED).body("Success")
+    }
+
+    @PutMapping("/community/{boardId}")
+    fun updateCommunityPost(@PathVariable boardId: Long, @RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.updateCommunityPost(boardId, boardCreateDTO)
+        return ResponseEntity.status(HttpStatus.OK).body("Success")
+    }
+
+    @DeleteMapping("/community/{boardId}")
+    fun deleteCommunity(@PathVariable boardId: Long, @RequestParam memberId:Long): ResponseEntity<String>{
+        boardService.deleteCommunityPost(boardId, memberId)
+        return ResponseEntity.status(HttpStatus.OK).body("Success")
     }
 
     //IllegalStateException 발생 시 400으로 반환
