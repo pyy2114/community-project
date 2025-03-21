@@ -131,5 +131,24 @@ class BoardService(
 
     }
 
+    @Transactional
+    fun deleteCommunityPost(boardId: Long, memberId: Long){
+        //유효한 게시물 아이디인지 검증
+        val board = boardRepository.findById(boardId)
+            .orElseThrow { throw IllegalStateException("존재하지 않는 게시글 입니다.") }
+
+        //멤버 찾기
+        val member = memberRepository.findById(memberId)
+            .orElseThrow { throw IllegalStateException("존재하지 않는 유저입니다.") }
+
+        if(member.id != board.member.id){
+            if(member.role != RoleType.ADMIN){
+                throw IllegalStateException("삭제 권한이 없습니다.")
+            }
+        }
+
+        boardRepository.delete(board)
+
+    }
 
 }

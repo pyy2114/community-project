@@ -47,6 +47,12 @@ class BoardController(
         return ResponseEntity.status(HttpStatus.OK).body("Success")
     }
 
+    @DeleteMapping("/community/{boardId}")
+    fun deleteCommunity(@PathVariable boardId: Long, @RequestParam memberId:Long): ResponseEntity<String>{
+        boardService.deleteCommunityPost(boardId, memberId)
+        return ResponseEntity.status(HttpStatus.OK).body("Success")
+    }
+
     //IllegalStateException 발생 시 400으로 반환
     @ExceptionHandler(IllegalStateException::class)
     fun handlerIllegalStateException(ex: IllegalStateException): ResponseEntity<String>{

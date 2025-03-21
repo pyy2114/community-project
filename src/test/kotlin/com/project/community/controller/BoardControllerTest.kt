@@ -280,4 +280,67 @@ class BoardControllerTest(
         assertThat(responseContent).isEqualTo("존재하지 않는 게시글 입니다.")
     }
 
+    @Test
+    @Order(10)
+    @DisplayName("게시물 삭제")
+    fun deleteCommunityPostTest(){
+        //given
+        val boardId = 2L
+        val memberId = 2L //--본인
+        val uri = "/api/v1/board/community/${boardId}?memberId=$memberId"
+
+        //when
+        val mvcResult = mockMvc
+            .perform(MockMvcRequestBuilders.delete(uri))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("Success")
+
+        assertThat(boardRepository.findById(boardId)).isEmpty
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("게시물 삭제-관리자")
+    fun deleteCommunityPostAdminTest(){
+        //given
+        val boardId = 3L
+        val memberId = 1L //--관리자
+        val uri = "/api/v1/board/community/${boardId}?memberId=$memberId"
+
+        //when
+        val mvcResult = mockMvc
+            .perform(MockMvcRequestBuilders.delete(uri))
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("Success")
+
+        assertThat(boardRepository.findById(boardId)).isEmpty
+    }
+    @Test
+    @Order(12)
+    @DisplayName("게시물 삭제-권한 없음")
+    fun deleteCommunityPostAuthExceptionTest(){
+        //given
+        val boardId = 4L
+        val memberId = 2L //--관리자x, 본인 x
+        val uri = "/api/v1/board/community/${boardId}?memberId=$memberId"
+
+        //when
+        val mvcResult = mockMvc
+            .perform(MockMvcRequestBuilders.delete(uri))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("삭제 권한이 없습니다.")
+    }
+
 }
