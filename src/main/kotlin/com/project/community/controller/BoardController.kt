@@ -41,6 +41,12 @@ class BoardController(
         return ResponseEntity.status(HttpStatus.CREATED).body("Success")
     }
 
+    @PutMapping("/community/{boardId}")
+    fun updateCommunityPost(@PathVariable boardId: Long, @RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.updateCommunityPost(boardId, boardCreateDTO)
+        return ResponseEntity.status(HttpStatus.OK).body("Success")
+    }
+
     //IllegalStateException 발생 시 400으로 반환
     @ExceptionHandler(IllegalStateException::class)
     fun handlerIllegalStateException(ex: IllegalStateException): ResponseEntity<String>{

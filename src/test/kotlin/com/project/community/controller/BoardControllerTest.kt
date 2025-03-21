@@ -1,5 +1,6 @@
 package com.project.community.controller
 
+import com.project.community.repository.BoardRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.json.JSONArray
 import org.json.JSONObject
@@ -29,6 +30,9 @@ import java.nio.charset.StandardCharsets
 class BoardControllerTest(
     @Autowired private val mockMvc: MockMvc
 ){
+
+    @Autowired
+    private lateinit var boardRepository: BoardRepository
 
     private fun performGet(uri:String):MvcResult{
         return mockMvc
@@ -157,7 +161,7 @@ class BoardControllerTest(
         val memberId = 2L
         val uri = "/api/v1/board/notice"
         val requestBody = """
-                {
+                { 
                     "memberId": $memberId,
                     "title" : "공지 제목",
                     "content" : "공지 내용물"
@@ -179,6 +183,101 @@ class BoardControllerTest(
         assertThat(responseContent).isEqualTo("작성 권한이 없습니다.")
     }
 
+    @Test
+    @Order(7)
+    @DisplayName("게시물 수정-성공")
+    fun updateCommunityPostTest(){
+        //given
+        val boardId = 2L
+        val uri = "/api/v1/board/community/${boardId}"
 
+        val requestBody = """
+                { 
+                    "memberId": 2,
+                    "title" : "수정된 제목",
+                    "content" : "수정된 내용"
+                }
+        """.trimIndent()
+
+        //when
+        val mvcResult = mockMvc
+            .perform(
+                MockMvcRequestBuilders.put(uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+            )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("Success")
+
+        val updateBoard = boardRepository.findById(boardId).orElseThrow()
+        assertThat(updateBoard.title).isEqualTo("수정된 제목")
+        assertThat(updateBoard.content).isEqualTo("수정된 내용")
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("게시물 수정-권한 예외")
+    fun updateCommunityPostAuthExceptionTest(){
+        //given
+        val boardId = 2L
+        val uri = "/api/v1/board/community/${boardId}"
+
+        val requestBody = """
+                { 
+                    "memberId": 3,
+                    "title" : "수정된 제목",
+                    "content" : "수정된 내용"
+                }
+        """.trimIndent()
+
+        //when
+        val mvcResult = mockMvc
+            .perform(
+                MockMvcRequestBuilders.put(uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+            )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("수정 권한이 없습니다.")
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("게시물 수정-없는 게시물")
+    fun updateCommunityPostIdExceptionTest() {
+        //given
+        val boardId = 999L
+        val uri = "/api/v1/board/community/${boardId}"
+
+        val requestBody = """
+                { 
+                    "memberId": 2,
+                    "title" : "수정된 제목",
+                    "content" : "수정된 내용"
+                }
+        """.trimIndent()
+
+        //when
+        val mvcResult = mockMvc
+            .perform(
+                MockMvcRequestBuilders.put(uri)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+            )
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andReturn()
+
+        //then
+        val responseContent = mvcResult.response.getContentAsString(StandardCharsets.UTF_8)
+        assertThat(responseContent).isEqualTo("존재하지 않는 게시글 입니다.")
+    }
 
 }

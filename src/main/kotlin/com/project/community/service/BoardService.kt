@@ -111,4 +111,25 @@ class BoardService(
         boardRepository.save(boardEntity)
     }
 
+    //게시글 수정
+    @Transactional
+    fun updateCommunityPost(boardId: Long, dto: BoardCreateDTO){
+        // 존재하는 아이디인지 찾기
+        val board = boardRepository.findById(boardId)
+                .orElseThrow{ throw IllegalStateException("존재하지 않는 게시글 입니다.")}
+
+        //DTO에 넘어온 member와 찾은 멤버가 동일인인지 체크 - 권한
+        if(board.member.id != dto.memberId){
+            throw IllegalStateException("수정 권한이 없습니다.")
+        }
+
+        //DTO로 넘어온 값 update로 해당 엔티티 변경
+        board.updateBoard(
+            title = dto.title,
+            content = dto.content
+        )
+
+    }
+
+
 }
