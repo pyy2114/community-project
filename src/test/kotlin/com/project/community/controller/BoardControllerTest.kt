@@ -95,9 +95,10 @@ class BoardControllerTest(
     fun createCommunityPostTest(){
         //given
         val memberId = 2L
-        val uri = "/api/v1/board/community/${memberId}"
+        val uri = "/api/v1/board/community"
         val requestBody = """
                 {
+                    "memberId": $memberId,
                     "title" : "테스트 제목",
                     "content" : "테스트 내용물"
                 }
@@ -124,9 +125,10 @@ class BoardControllerTest(
     fun createNoticeTest(){
         //given
         val memberId = 1L
-        val uri = "/api/v1/board/notice/${memberId}"
+        val uri = "/api/v1/board/notice"
         val requestBody = """
                 {
+                    "memberId": $memberId,
                     "title" : "공지 제목",
                     "content" : "공지 내용물"
                 }
@@ -153,9 +155,10 @@ class BoardControllerTest(
     fun createNoticeRoleExceptionTest(){
         //given
         val memberId = 2L
-        val uri = "/api/v1/board/notice/${memberId}"
+        val uri = "/api/v1/board/notice"
         val requestBody = """
                 {
+                    "memberId": $memberId,
                     "title" : "공지 제목",
                     "content" : "공지 내용물"
                 }

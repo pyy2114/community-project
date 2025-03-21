@@ -55,7 +55,10 @@ class BoardService(
 
     //일반글 작성
     @Transactional
-    fun createCommunityPost(dto: BoardCreateDTO, memberId: Long){
+    fun createCommunityPost(dto: BoardCreateDTO){
+
+        val memberId = dto.memberId
+
         //멤버 객체 찾아오기(추후에 security로 대체)
         val member = memberRepository.findById(memberId)
             .orElseThrow{throw IllegalStateException("존재하지 않는 유저입니다.")}
@@ -79,7 +82,10 @@ class BoardService(
 
     //공지 작성
     @Transactional
-    fun createNotice(dto: BoardCreateDTO, memberId: Long){
+    fun createNotice(dto: BoardCreateDTO){
+
+        val memberId = dto.memberId
+
         //멤버 객체 찾아오기(추후에 security로 대체)
         val member = memberRepository.findById(memberId)
             .orElseThrow{throw IllegalStateException("존재하지 않는 유저입니다.")}

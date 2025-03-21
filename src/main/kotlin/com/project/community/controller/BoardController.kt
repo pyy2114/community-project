@@ -8,13 +8,7 @@ import com.project.community.service.BoardService
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/board")
@@ -35,19 +29,17 @@ class BoardController(
     }
 
     // TODO :: valid도 넣어야징..
-    @PostMapping("/community/{memberId}")
-    fun createCommunityPost(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): ResponseEntity<String>{
-        boardService.createCommunityPost(boardCreateDTO, memberId)
+    @PostMapping("/community")
+    fun createCommunityPost(@RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.createCommunityPost(boardCreateDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Success")
     }
 
-    @PostMapping("/notice/{memberId}")
-    fun createNotice(@RequestBody boardCreateDTO: BoardCreateDTO, @PathVariable memberId: Long): ResponseEntity<String>{
-        boardService.createNotice(boardCreateDTO, memberId)
+    @PostMapping("/notice")
+    fun createNotice(@RequestBody boardCreateDTO: BoardCreateDTO): ResponseEntity<String>{
+        boardService.createNotice(boardCreateDTO)
         return ResponseEntity.status(HttpStatus.CREATED).body("Success")
     }
-
-
 
     //IllegalStateException 발생 시 400으로 반환
     @ExceptionHandler(IllegalStateException::class)
